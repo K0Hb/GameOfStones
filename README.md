@@ -1,0 +1,2 @@
+# GameOfStones
+Игра в камни
