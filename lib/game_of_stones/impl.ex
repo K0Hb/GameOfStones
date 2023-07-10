@@ -1,10 +1,12 @@
 defmodule GameOfStones.Impl do
+  alias GameOfStones.IoTemplates
+
   def do_take({player, num_stones, current_stones})
   when not is_integer(num_stones) or
   num_stones < 1 or
   num_stones > 3 or
   num_stones > current_stones do
-    message = "Вы можете взять от 1 до 3 камней."
+    message = IoTemplates.puts_limit_get_stones()
 
     {:reply, {:error, message}, {player, current_stones, :game_in_progress}}
   end

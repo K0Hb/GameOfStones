@@ -2,6 +2,7 @@ defmodule GameOfStones.Server do
   use GenServer
 
   alias GameOfStones.Impl
+  alias GameOfStones.Color
 
   def init({:started, stones_num}) do
     {:ok, {1, stones_num, :started}}
@@ -16,6 +17,6 @@ defmodule GameOfStones.Server do
   end
 
   def terminate(_reason, _state) do
-    IO.puts("Игра закончена.")
+    IO.puts Color.green("Игра закончена.")
   end
 end
