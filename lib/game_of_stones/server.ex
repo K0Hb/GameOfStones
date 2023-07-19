@@ -1,11 +1,20 @@
 defmodule GameOfStones.Server do
-  use GenServer
+  use GenServer, restart: :transient
 
   alias GameOfStones.Impl
   alias GameOfStones.Color
 
-  def init({:started, stones_num}) do
-    {:ok, {1, stones_num, :started}}
+  def start_link(_args) do
+    GenServer.start_link(__MODULE__, :started, name: __MODULE__)
+  end
+
+  def init(:started) do
+    IO.puts Color.light_blue("Стартовал сервер GameOfStones")
+    {:ok, {1, nil, :started}}
+  end
+
+  def handle_call({:set, num_stones}, _from, {player, nil, :started}) do
+    Impl.do_set({player, num_stones})
   end
 
   def handle_call(:current_state, _from, {player, current_stones, _}) do

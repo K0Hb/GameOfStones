@@ -1,5 +1,19 @@
 defmodule GameOfStones.Impl do
   alias GameOfStones.IoTemplates
+  alias GameOfStones.Color
+
+  def do_set({player, num_stones}) when not is_integer(num_stones) or num_stones < 4 do
+    {
+      :strop,
+      :normal,
+      {:error, Color.red("Камней должно быть не менее 4шт")},
+      {player, 0, :game_finish}
+    }
+  end
+
+  def do_set({player, num_stones}) do
+    {:reply, {:stones_set, player, num_stones}, {player, num_stones, :game_in_progress}}
+  end
 
   def do_take({player, num_stones, current_stones})
   when not is_integer(num_stones) or
@@ -13,10 +27,9 @@ defmodule GameOfStones.Impl do
 
   def do_take({player, num_stones, current_stones}) when num_stones == current_stones do
     {
-      :stop,
-      :normal,
+      :reply,
       {:winner, next_player(player)}, # ответ клиенту
-      {nil, 0, :game_finish} # новое состояние
+      {player, nil, :started} # новое состояние
     }
   end
 

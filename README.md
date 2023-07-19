@@ -8,9 +8,9 @@
 
 ## Запуск
 ```
-iex -S mix
-GameOfStones.run 10   <- кол-во камней в куче
+escript game_of_stones --stones 15
 ```
+где цифра 15 кол-во камней в куче
 
 ## Визуализация
 ![Игра в камни](game_of_stones.png)

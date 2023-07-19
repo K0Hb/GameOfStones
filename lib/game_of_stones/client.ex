@@ -4,13 +4,25 @@ defmodule GameOfStones.Client do
   alias GameOfStones.IoTemplates
   alias GameOfStones.Color
 
-  def play(initial_stones_num) do
-    GenServer.start_link(@server, {:started, initial_stones_num}, name: @server)
+  def main(argv) do
+    parse(argv) |> set_initial_stones()
+  end
 
-    {player, current_stones} = GenServer.call(@server, :current_state)
+  defp set_initial_stones(stones_to_set) do
+    case GenServer.call(@server, {:set, stones_to_set}) do
+      {:stones_set, player, num_stones} ->
+        IoTemplates.puts_game_start(player, num_stones)
 
-    IoTemplates.puts_game_start(player, current_stones)
-    next_turn()
+        next_turn()
+      {:error, reason} ->
+        IoTemplates.puts_error(reason)
+        exit(:normal)
+    end
+  end
+
+  defp parse(argv) do
+    {opts, _, _} = OptionParser.parse(argv, switches: [stones: :integer])
+    opts |> Keyword.get(:stones, Application.get_env(:game_of_stones, :default_stones))
   end
 
   defp next_turn() do
@@ -45,10 +57,13 @@ defmodule GameOfStones.Client do
   end
 
   defp restart?({num, _}) when num == 1,  do: start()
-  defp restart?(_), do: IO.puts Color.red("До встречи.")
+  defp restart?(_) do
+    IO.puts Color.red("До встречи.")
+    exit(:normal)
+  end
 
   defp start do
-    get_started_count_stones() |> play()
+    get_started_count_stones() |> set_initial_stones()
   end
 
   defp get_started_count_stones do
@@ -58,8 +73,8 @@ defmodule GameOfStones.Client do
       Integer.parse()
 
     cond do
-      count_stones >= 3 -> count_stones
-      count_stones < 3 -> get_started_count_stones()
+      count_stones >= 4 -> count_stones
+      count_stones < 4 -> get_started_count_stones()
     end
   end
 end

@@ -4,6 +4,7 @@ defmodule GameOfStones.MixProject do
   def project do
     [
       app: :game_of_stones,
+      escript: [main_module: GameOfStones.Client],
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
@@ -14,6 +15,8 @@ defmodule GameOfStones.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
+      env: [default_stones: 30],
+      mod: { GameOfStones.Application, [] },
       extra_applications: [:logger]
     ]
   end

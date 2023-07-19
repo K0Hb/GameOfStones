@@ -45,8 +45,8 @@ defmodule GameOfStones.IoTemplates do
   def gets_start_count_stones do
     IO.gets(
       Color.light_blue("Какое количество камней будет в куче?") <>
-      Color.light_blue("\nКоличество камней, должно быть не менее") <>
-      Color.green("\n3") <>
+      Color.light_blue("\nКоличество камней, должно быть не менее:") <>
+      Color.green(" 4") <>
       Color.light_blue("\nВведите цифру:")
     )
   end
@@ -57,5 +57,12 @@ defmodule GameOfStones.IoTemplates do
     Color.red(" до ") <>
     Color.green("3") <>
     Color.red(" камней.")
+  end
+
+  def puts_error(reason) do
+    IO.gets(
+      Color.red("Произошла ошибка:") <>
+      Color.blue(reason)
+    )
   end
 end
